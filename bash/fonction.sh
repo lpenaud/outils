@@ -23,6 +23,11 @@ function java_home () {
   echo "${JAVA_HOME}"
 }
 
+function java_gradle () {
+  java::gradle
+  java_home
+}
+
 fonction::os_script "fonction"
 source "${FONCTION_ROOT}/java/java.sh"
 

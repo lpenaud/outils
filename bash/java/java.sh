@@ -37,3 +37,22 @@ function java::home () {
   fi
   export CATALINA_HOME="${tomcat}"
 }
+
+function java::gradle () {
+  local res
+  if [ ! -f build.gradle ]; then
+    printf "%s\n%s\n" \
+      "build.gradle do not exists" \
+      "Are you sure your projet use Gradle?" >&2
+    return 1
+  fi
+  res="$(grep -m 1 'targetCompatibility' build.gradle)"
+  if [[ "${res}" =~ [0-9]+$ ]]; then
+    java::home "${BASH_REMATCH[0]}"
+  else
+    printf "%s\n%s\n" \
+      "Cannot extract java version from:" \
+      "${res}" >&2
+    return 1
+  fi
+}
