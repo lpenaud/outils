@@ -12,7 +12,7 @@ const enum Char {
 }
 
 const DEFAULT_MESSAGE = "#? ";
-const EOL = "\n";
+const EOL = String.fromCodePoint(Char.LF);
 const EOLS: Uint8Array = Uint8Array.of(Char.CR, Char.LF);
 
 function defaultOptions(
@@ -93,7 +93,8 @@ export class Prompt {
       }
       buffer[i++] = byte;
     }
-    return this.#decoder.decode(buffer);
+    // Slice else decoder try to convert NULL char.
+    return this.#decoder.decode(buffer.slice(0, i));
   }
 
   async readInt(radix?: number): Promise<number> {

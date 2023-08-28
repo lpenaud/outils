@@ -1,7 +1,8 @@
-import * as io from "https://deno.land/std@0.197.0/io/mod.ts";
-import * as flags from "https://deno.land/std@0.197.0/flags/mod.ts";
-
+#!/usr/bin/env -S deno run --allow-run=git 
+import * as io from "std/io/mod.ts";
+import * as flags from "std/flags/mod.ts";
 import { Prompt } from "./utils/prompt.ts";
+import { unknownFlagArg } from "./utils/cli.ts";
 
 type CommitTypeUpperCase =
   | "BUILD"
@@ -29,7 +30,6 @@ type CommitTypeLowerCase =
   | "style"
   | "test";
 
-
 type CommitType = CommitTypeUpperCase | CommitTypeLowerCase;
 
 type Commit = "${CommitType}*";
@@ -48,6 +48,7 @@ interface CommitOptions {
 interface GitlabUrlOptions {
   remote: string;
   branch: string;
+  remoteUrl: URL;
 }
 
 const COMMIT_TYPES: readonly CommitTypeUpperCase[] = Object.freeze([
@@ -62,8 +63,6 @@ const COMMIT_TYPES: readonly CommitTypeUpperCase[] = Object.freeze([
   "REVERT",
   "STYLE",
 ]);
-
-const TICKET_BRANCH_REG_EXP = /[A-Z0-9]+-[0-9]+$/;
 
 function runGitCommand(options?: Omit<Deno.CommandOptions, "stderr">) {
   return new Deno.Command("git", {
@@ -86,10 +85,10 @@ async function* listCommits(): AsyncGenerator<Commit> {
   }
 }
 
-async function changelog(prefix?: string): Promise<string> {
+async function getChangelog(prefix?: string): Promise<string> {
   const commits: string[] = [];
   for await (const commit of listCommits()) {
-    commits.push(prefix + commit)
+    commits.push(prefix + commit);
   }
   return commits.join("\n");
 }
@@ -128,12 +127,23 @@ async function getRemoteUrl(remote = "origin"): Promise<URL> {
   );
 }
 
-async function getGitlabUrl(options: Partial<GitlabUrlOptions> = {}) {
+function getGitPathname(remoteUrl: URL): string {
+  return remoteUrl.pathname.replace(/\.git\/?$/, "");
+}
+
+async function getGitlabUrl(
+  options: Partial<GitlabUrlOptions> = {},
+): Promise<URL> {
   // http://HOSTNAME[:PORT]/owner/repository[.git[/]]
-  const remoteUrl = await getRemoteUrl(options.remote);
+  const remoteUrl = options.remoteUrl || await getRemoteUrl(options.remote);
   const branch = options.branch || await getCurrentBranch();
-  const pathname = remoteUrl.pathname.replace(/\.git\/?$/, "");
-  return new URL(`${pathname}/-/tree/${branch}`, remoteUrl);
+  return new URL(`${getGitPathname(remoteUrl)}/-/tree/${branch}`, remoteUrl);
+}
+
+async function getGithubUrl(options: Partial<GitlabUrlOptions>): Promise<URL> {
+  const remoteUrl = options.remoteUrl || await getRemoteUrl(options.remote);
+  const branch = options.branch || await getCurrentBranch();
+  return new URL(`${getGitPathname(remoteUrl)}/tree/${branch}`, remoteUrl);
 }
 
 function createMessage(
@@ -173,7 +183,7 @@ function createCommit(options: Partial<CommitOptions> = {}) {
 function types(args: string[]) {
   const { separator } = flags.parse(args, {
     string: [
-      "separator"
+      "separator",
     ],
     alias: {
       separator: "s",
@@ -181,62 +191,143 @@ function types(args: string[]) {
     default: {
       separator: "\n",
     },
-    unknown(arg) {
-      console.error(`Ingore ${arg}`);
-    }
-  })
+    unknown: unknownFlagArg,
+  });
   console.log(COMMIT_TYPES.join(separator));
   return Promise.resolve(0);
 }
 
-async function commit() {
+function isCommitType(type?: string): type is CommitType {
+  if (type === undefined) {
+    return false;
+  }
+  if (COMMIT_TYPES.includes(type as CommitTypeUpperCase)) {
+    return true;
+  }
+  return COMMIT_TYPES.find((v) => v.toLowerCase() === type) !== undefined;
+}
+
+function addFiles(files: string[]) {
+  if (files.length === 0) {
+    return null;
+  }
+  return runGitCommand({
+    args: ["add"].concat(files),
+  });
+}
+
+async function commit(args: string[]): Promise<number> {
+  let { type, scope, description, edit, _: files } = flags.parse(args, {
+    string: [
+      "type",
+      "scope",
+      "description",
+    ],
+    boolean: [
+      "edit",
+    ],
+    alias: {
+      type: "t",
+      scope: "s",
+      description: "d",
+      edit: "e",
+    },
+  });
   const prompt = Prompt.withDefaultString();
-  const commitType = await prompt.select(COMMIT_TYPES);
-  prompt.print("Scope");
-  prompt.printLn(":");
-  const commitScope = await prompt.readString();
-  prompt.printLn("Description (leave empty to open an editor):");
-  const commitDescription = (await prompt.readString())
-    .trim();
+  const commitType: CommitType = isCommitType(type)
+    ? type
+    : await prompt.select(COMMIT_TYPES);
+  if (scope === undefined) {
+    prompt.printLn("Scope:");
+    scope = await prompt.readString();
+  }
+  if (description === undefined) {
+    prompt.printLn("Description (leave empty to open an editor):");
+    description = (await prompt.readString()).trim();
+  }
+  const addProcess = await addFiles(files.map((v) => v.toString()));
+  if (addProcess !== null && !addProcess.success) {
+    return 1;
+  }
   const status = await createCommit({
-    edit: commitDescription.length === 0,
+    edit: edit || description.length === 0,
     message: {
       type: commitType,
-      scope: commitScope,
-      description: commitDescription,
+      scope,
+      description,
     },
   });
   return status.code;
 }
 
-async function gitlabUrl(args: string[]): Promise<number> {
-  const options = flags.parse(args, {
+type GitWebUrlType = "gitlab" | "github";
+
+interface GebWebUrlOptions extends GitlabUrlOptions {
+  type: GitWebUrlType;
+}
+
+async function getWebUrl(options: Partial<GebWebUrlOptions> = {}) {
+  const remoteUrl = await getRemoteUrl(options.remote);
+  switch (options.type) {
+    case "github":
+      return getGithubUrl(options);
+    case "gitlab":
+      return getGitlabUrl(options);
+  }
+  if (remoteUrl.host === "github.com") {
+    return getGithubUrl(options);
+  }
+  return getGitlabUrl(options);
+}
+
+function isGitWebUrlType(type: string): type is GitWebUrlType {
+  return ["gitlab", "github"].includes(type);
+}
+
+function parseGitWebUrlType(type?: string): GitWebUrlType | undefined {
+  if (type === undefined) {
+    return undefined;
+  }
+  if (isGitWebUrlType(type)) {
+    return type;
+  }
+  return undefined;
+}
+
+async function getUrl(args: string[]): Promise<number> {
+  const { branch, remote, type } = flags.parse(args, {
     string: [
       "branch",
-      "remote"
+      "remote",
+      "type",
     ],
     alias: {
       branch: "b",
-      remote: "r"
+      remote: "r",
+      type: "t",
     },
+    unknown: unknownFlagArg,
   });
-  const gitlabUrl = await getGitlabUrl({
-    branch: options.branch ?? options.b,
-    remote: options.remote ?? options.r,
+  const webUrl = await getWebUrl({
+    branch,
+    remote,
+    type: parseGitWebUrlType(type),
   });
-  console.log(gitlabUrl.href);
+  console.log(webUrl.href);
+  return 0;
+}
+
+async function changelog(): Promise<number> {
+  console.log(await getChangelog());
   return 0;
 }
 
 function main(args: string[]): Promise<number> {
   const commands: Record<string, (args: string[]) => Promise<number>> = {
-    async changelog() {
-      console.log(await changelog("* "));
-      return 0;
-    },
+    changelog,
     types,
     commit,
-    "gitlab-url": gitlabUrl,
+    "get-url": getUrl,
   };
   const command = commands[args[0] ?? "types"];
   if (command === undefined) {
