@@ -55,6 +55,13 @@ function java_home () {
 }
 
 ########################################################################
+# Print well formatted xml content from user graphical clipboard.
+########################################################################
+function xmlout () {
+  clipout | xmllint --format --output "${1:--}" -
+}
+
+########################################################################
 # Set JAVA_HOME and CATALINA_HOME from the sourceCompatibility on a Gradle build file.
 # Arguments:
 #   Gradle build file path (by default 'build.gradle')
@@ -86,5 +93,6 @@ function g. () {
 
 fonction::os_script fonction
 fonction::os_script java
+fonction::os_script thing
 
 java::home 17
