@@ -29,6 +29,36 @@ function fonction::os_script () {
   return 1
 }
 
+function fonction::warning () {
+  printf "WARNING: %s\n" "${1}" >&2
+  shift
+  if [ $# -ne 0 ]; then
+    printf "  %s\n" "$@" >&2
+  fi
+}
+
+########################################################################
+# Test if all required functions are implemented.
+# Arguments:
+#  ...Function to tests
+# Returns:
+#  1 If a fonction is missing otherwise 0.
+########################################################################
+function fonction::test_impl () {
+  local -a missings
+  while [ $# -ne 0 ]; do
+    if ! type -p "${1}"; then
+      missings+=("${1}")
+    fi
+    shift
+  done
+  if [ "${#missings}" -eq 0 ]; then
+    return 0
+  fi
+  fonction::warning "Missing implementations:" "${missings[@]}"
+  return 1
+}
+
 ########################################################################
 # Add a directory to the PATH.
 # Test if the given directory.
@@ -77,11 +107,11 @@ function java_gradle () {
   java::gradle "${1}" && java_home
 }
 
-##########################################################
+########################################################################
 # Open Git repository on Website IHM.
 # Returns:
 #  1 If it's impossible to get 'origin' repository url.
-##########################################################
+########################################################################
 function g. () {
   local -r url="$("${FUNCTIONS_ROOT}/scripts/git.ts" "gitlab-url" $@)"
   if [ -z "${url}" ]; then
@@ -91,8 +121,33 @@ function g. () {
   open "${url}"
 }
 
+########################################################################
+# Generate base64 from a file.
+# Arguments:
+#  File to convert into 64.
+# Returns:
+#  1 If the file is not given or doesn't exist.
+########################################################################
+function clip64 () {
+  local -r infile="${1}"
+  if [ -z "${infile}" ]; then
+    printf "Usage: %s INFILE\n" \
+      "${FUNCNAME}" \
+      >&2
+    return 1
+  fi
+  if [ ! -f "${infile}" ]; then
+    printf "The file '%s' doesn't exists\n" \
+      "${infile}" \
+      >&2
+    return 1
+  fi
+  base64 -w 0 "${infile}" | clipin
+}
+
 fonction::os_script fonction
+fonction::test_impl open clipout clipin
+
 fonction::os_script java
-fonction::os_script thing
 
 java::home 17
