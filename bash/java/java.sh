@@ -1,3 +1,7 @@
+#
+# Java utils functions.
+#
+
 ########################################################################
 # Return Java Developer Kit (JDK) absolute path from the major version number.
 # Outputs:
