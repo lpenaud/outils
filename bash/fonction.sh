@@ -29,6 +29,12 @@ function fonction::os_script () {
   return 1
 }
 
+########################################################################
+# Print a warning message to STDERR.
+# Arguments:
+#   Warning message
+#   ...Stack
+########################################################################
 function fonction::warning () {
   printf "WARNING: %s\n" "${1}" >&2
   shift
@@ -126,7 +132,7 @@ function g. () {
 # Arguments:
 #  File to convert into 64.
 # Returns:
-#  1 If the file is not given or doesn't exist.
+#  1 If the file is not given or doesn't exist otherwise 0.
 ########################################################################
 function clip64 () {
   local -r infile="${1}"
@@ -143,6 +149,20 @@ function clip64 () {
     return 1
   fi
   base64 -w 0 "${infile}" | clipin
+}
+
+########################################################################
+# Generate PDF from a base64 string stored into graphical user clipboard.
+# Arguments:
+#  Output file (by default generate a temporary file)
+# Outputs:
+#  Show PDF path 
+########################################################################
+function pdf64 () {
+  local -r outfile="${1:-"$(mktemp --suffix=.pdf)"}"
+  clipout | base64 -d > "${outfile}" \
+    && open "${outfile}"
+  echo "${outfile}"
 }
 
 fonction::os_script fonction

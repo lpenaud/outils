@@ -26,3 +26,5 @@ function clipout () {
 function clipin () {
   xclip -selection clipboard -in
 }
+
+fonction::test_impl xdg-open xclip
