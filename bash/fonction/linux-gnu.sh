@@ -1,4 +1,10 @@
 #!/bin/bash
+#
+# Utility linux-gnu Bash functions.
+# Fonctions means functions in french.
+# Any question?
+# Ask me at lpenaud@zaclys.net
+#
 
 ########################################################################
 # Call xdg-open to open file by the user default software.

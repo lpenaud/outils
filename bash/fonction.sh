@@ -1,5 +1,6 @@
+#!/bin/bash
 #
-# Utility functions.
+# Utility multi-os Bash functions.
 # Fonctions means functions in french.
 # Any question?
 # Ask me at lpenaud@zaclys.net

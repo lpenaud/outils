@@ -1,5 +1,9 @@
+#!/bin/bash
 #
-# Java utils functions.
+# Utility multi-os Bash functions about Java.
+# Fonctions means functions in french.
+# Any question?
+# Ask me at lpenaud@zaclys.net
 #
 
 ########################################################################
