@@ -16,12 +16,17 @@ declare -r FONCTION_ROOT="$(dirname "$(realpath "${BASH_SOURCE}")")"
 #   Scripts fonction
 ########################################################################
 function fonction::os_script () {
-  local -r script="${FONCTION_ROOT}/${1}/${OSTYPE}.sh"
-  if [ ! -f "${script}" ]; then
-    echo "Unknown OSTYPE: ${OSTYPE} to '${1}'" >&2
-    return 1
-  fi
-  source "${script}"
+  local -a scripts=("${FONCTION_ROOT}/${1}/${OSTYPE}.sh" "${FONCTION_ROOT}/${1}/${1}.sh")
+  local script
+  for script in "${scripts[@]}"; do
+    if [ -f "${script}" ]; then
+      source "${script}"
+      return
+    fi
+  done
+  echo "Cannot find theses scripts:" >&2
+  printf "  - %s\n" ${scripts[@]} >&2
+  return 1
 }
 
 ########################################################################
