@@ -166,6 +166,28 @@ function pdf64 () {
   echo "${outfile}"
 }
 
+########################################################################
+# Transform text to upper case.
+# Arguments:
+#  Text to tranform
+# Outputs:
+#  Text transformed to upper case
+########################################################################
+function uppercase () {
+  echo "${1^^}"
+}
+
+########################################################################
+# Transform text to lower case.
+# Arguments:
+#  Text to transform
+# Outputs:
+#  Text transformed to lower case
+########################################################################
+function lowercase () {
+  echo "${1,,}"
+}
+
 fonction::os_script fonction
 fonction::test_impl open clipout clipin
 
