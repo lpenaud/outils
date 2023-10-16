@@ -188,6 +188,17 @@ function lowercase () {
   echo "${1,,}"
 }
 
+########################################################################
+# Get string length.
+# Arguments:
+#  Input string
+# Outputs:
+#  Input string length
+########################################################################
+function length () {
+  echo "${#1}"
+}
+
 fonction::os_script fonction
 fonction::test_impl open clipout clipin
 
