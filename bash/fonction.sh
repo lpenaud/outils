@@ -199,6 +199,17 @@ function length () {
   echo "${#1}"
 }
 
+########################################################################
+# Show a calculation result.
+# Arguments:
+#  Calcul
+# Outputs:
+#  Calcul result
+########################################################################
+function calc () {
+  echo "$(( ${1} ))"
+}
+
 fonction::os_script fonction
 fonction::test_impl open clipout clipin
 
