@@ -6,7 +6,7 @@ Some useful functions (outils means tools/utils in french).
 
 Some functions to add to your terminal.
 
-Use `[install.sh](./install.sh)` to inject functions in your `~/.bash_aliases`.
+Use [install.sh](./install.sh) to inject functions in your `~/.bash_aliases`.
 
 ## Windows
 
