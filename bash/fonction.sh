@@ -54,7 +54,7 @@ function fonction::warning () {
 function fonction::test_impl () {
   local -a missings
   while [ $# -ne 0 ]; do
-    if ! type -p "${1}"; then
+    if ! type -p "${1}" 2> /dev/null; then
       missings+=("${1}")
     fi
     shift
@@ -211,7 +211,6 @@ function calc () {
 }
 
 fonction::os_script fonction
-fonction::test_impl open clipout clipin
 
 fonction::os_script java
 
