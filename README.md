@@ -6,17 +6,8 @@ Some useful functions (outils means tools/utils in french).
 
 Some functions to add to your terminal.
 
-### GNU / Linux
+Use `[install.sh](./install.sh)` to inject functions in your `~/.bash_aliases`.
 
-Functions to add to your `~/.bash_aliases` or `~/.bashrc`.
+## Windows
 
-```bash
-if [ -z "${FONCTIONS_PATH}/bash/fonction.sh" ]; then
-  source "${FONCTIONS_PATH}/bash/fonction.sh"
-fi
-```
-
-### Windows
-
-Install [MSYS2](https://www.msys2.org/) and follow the GNU / Linux setup instructions.
-
+Theses Bash scripts are compatible with Windows thanks to [MSYS2](https://www.msys2.org/).
