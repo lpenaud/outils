@@ -73,9 +73,11 @@ function fonction::test_impl () {
 #   Directory to add.
 ########################################################################
 function add2path () {
-  if [ -d "${1}" ]; then
-    export PATH="${1}:${PATH}"
+  if [ ! -d "${1}" ]; then
+    printf "Path directory not found: '%s'\n" "${1}" >&2
+    return 1
   fi
+  export PATH="${1}:${PATH}"
 }
 
 ########################################################################
@@ -174,7 +176,10 @@ function pdf64 () {
 #  Text transformed to upper case
 ########################################################################
 function uppercase () {
-  echo "${1^^}"
+  while [ $# -ne 0 ]; do
+    echo "${1^^}"
+    shift
+  done
 }
 
 ########################################################################
@@ -185,7 +190,10 @@ function uppercase () {
 #  Text transformed to lower case
 ########################################################################
 function lowercase () {
-  echo "${1,,}"
+  while [ $# -ne 0 ]; do
+    echo "${1,,}"
+    shift
+  done
 }
 
 ########################################################################
@@ -196,7 +204,10 @@ function lowercase () {
 #  Input string length
 ########################################################################
 function length () {
-  echo "${#1}"
+  while [ $# -ne 0 ]; do
+    echo "${#1}"
+    shift
+  done
 }
 
 ########################################################################
