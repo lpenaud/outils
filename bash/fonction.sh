@@ -237,6 +237,25 @@ function calc () {
   echo "$(( ${1} ))"
 }
 
+########################################################################
+# Extract Node major version from package.json
+# Arguments:
+#  Path of package.json (by default 'package.json')
+# Returns:
+#  1 if Node version cannot be read.
+########################################################################
+function nvmuse () {
+  # Get the version string
+  local -r version="$(jq --raw-output .engines.node "${1:-package.json}")"
+  # Get the major version
+  if [[ ! "${version}" =~ ^([0-9]+) ]]; then
+    echo "Cannot find node version" >&2
+    return 1
+  fi
+  # Use nvm to use
+  nvm use "${BASH_REMATCH[1]}"
+}
+
 # Vim are the best editor I known
 # Fly Emacs and Nano (especially Nano)
 export EDITOR=vim
