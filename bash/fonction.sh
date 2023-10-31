@@ -237,6 +237,10 @@ function calc () {
   echo "$(( ${1} ))"
 }
 
+# Vim are the best editor I known
+# Fly Emacs and Nano (especially Nano)
+export EDITOR=vim
+
 fonction::os_script fonction
 
 fonction::os_script java
