@@ -3,8 +3,8 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-declare -r BASH_ALIASES="${HOME}/.bash_aliases"
-declare fonction="${1:-${PWD}}/bash/fonction.sh"
+declare -r BASH_ALIASES="${HOME}/.bash_aliases" OUTILS_DIR="${1:-${PWD}}"
+declare fonction="${OUTILS_DIR}/bash/fonction.sh"
 
 if [ ! -s "${fonction}" ]; then
   echo "ERROR: File doesn't exist or is empty." >&2
@@ -18,4 +18,4 @@ EOF
 echo "Written in: ${BASH_ALIASES}"
 
 echo "Copy dotfiles"
-cp -v dotfile/.* ~
+cp -v "${OUTILS_DIR}"/dotfile/.* "${HOME}"
