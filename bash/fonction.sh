@@ -131,6 +131,14 @@ function g. () {
 }
 
 ########################################################################
+# Open the current directory on Codium.
+# See: https://vscodium.com/
+########################################################################
+function c. () {
+  codium .
+}
+
+########################################################################
 # Generate base64 from a file.
 # Arguments:
 #  File to convert into 64.
