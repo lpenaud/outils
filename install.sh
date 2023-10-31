@@ -15,4 +15,7 @@ fi
 tee -a "${BASH_ALIASES}" <<EOF 
 source "${fonction}"
 EOF
-echo "Written in: ${BASH_ALIASES}" >&2
+echo "Written in: ${BASH_ALIASES}"
+
+echo "Copy dotfiles"
+cp -v dotfile/.* ~
