@@ -1,0 +1,20 @@
+[alias]
+	ci = commit
+	lg = log --graph "--pretty='tformat:%C(auto)%d%Creset %C(yellow)%h%Creset - %C(green)%an%Creset - %C(blue)%as%Creset%n%>>(8)%B'"
+	st = status
+	pullr = pull --rebase
+	pushf = push --force
+	ri = rebase --interactive
+	rc = rebase --continue
+	ra = rebase --abort
+	rs = rebase --skip
+	unstage = restore --staged
+	cia = commit --amend
+	cim = commit --message
+	chp = cherry-pick
+	cha = cherry-pick --abort
+	chs = cherry-pick --skip
+	chc = cherry-pick --continue
+	stp = stash push
+[help]
+	format = web
