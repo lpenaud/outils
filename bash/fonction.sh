@@ -286,7 +286,6 @@ function confirm () {
 #   SSH agent variables.
 ########################################################################
 function sshagent () {
-  local -l bool
   if [ -s "${SSH_AGENT}" ]; then
     cat "${SSH_AGENT}"
     if ! confirm "Launch this script?"; then
