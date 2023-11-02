@@ -279,6 +279,30 @@ function confirm () {
   return 2
 }
 
+########################################################################
+# Use existing SSH Agent or create one.
+# Create a file in the user home with the ssh-agent output.
+# Outputs:
+#   SSH agent variables.
+########################################################################
+function sshagent () {
+  local -l bool
+  if [ -s "${SSH_AGENT}" ]; then
+    cat "${SSH_AGENT}"
+    if ! confirm "Launch this script?"; then
+      ssh-agent > "${SSH_AGENT}"
+    fi
+  fi
+  source "${SSH_AGENT}" &> /dev/null
+  if ! ps -p "${SSH_AGENT_PID}" > /dev/null; then
+    ssh-agent > "${SSH_AGENT}"
+    source "${SSH_AGENT}"
+  fi
+  printf "%s=%s\n" "SSH_AGENT" "${SSH_AGENT}" \
+    "SSH_AUTH_SOCK" "${SSH_AUTH_SOCK}" \
+    "SSH_AGENT_PID" "${SSH_AGENT_PID}"
+}
+
 # Vim are the best editor I known
 # Fly Emacs and Nano (especially Nano)
 export EDITOR=vim
