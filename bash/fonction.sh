@@ -7,6 +7,7 @@
 #
 
 declare -r FONCTION_ROOT="$(dirname "$(realpath "${BASH_SOURCE}")")"
+declare -r SSH_AGENT="${HOME}/.ssh-agent"
 
 ########################################################################
 # Run a fonction Bash script according to OSTYPE.
