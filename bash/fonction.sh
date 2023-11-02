@@ -256,6 +256,29 @@ function nvmuse () {
   nvm use "${BASH_REMATCH[1]}"
 }
 
+########################################################################
+# Ask boolean choice to a user (by default is true).
+# Arguments:
+#  Optionnally a message to a user before the read prompt
+# Returns:
+#  0 if yes, 1 if no, otherwise 2.
+########################################################################
+function confirm () {
+  local -l bool
+  if [ -n "${1}" ]; then
+    # Read prompt write on stderr
+    echo "${1}" >&2
+  fi
+  read -r -p "[Y/n] " bool
+  if [ -z "${bool}" ] || [ "${bool}" = "y" ]; then
+    return 0
+  fi
+  if [ "${bool}" = "n" ]; then
+    return 1
+  fi
+  return 2
+}
+
 # Vim are the best editor I known
 # Fly Emacs and Nano (especially Nano)
 export EDITOR=vim
