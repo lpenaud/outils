@@ -292,6 +292,8 @@ function sshagent () {
     if ! confirm "Launch this script?"; then
       ssh-agent > "${SSH_AGENT}"
     fi
+  else 
+    ssh-agent > "${SSH_AGENT}"
   fi
   source "${SSH_AGENT}" &> /dev/null
   if ! ps -p "${SSH_AGENT_PID}" > /dev/null; then
