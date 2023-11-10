@@ -310,7 +310,12 @@ function sshagent () {
 export EDITOR=vim
 
 fonction::os_script fonction
-
 fonction::os_script java
+
+if [ -s "${FONCTION_ROOT}/git-prompt/gitprompt.sh" ]; then
+   GIT_PROMPT_ONLY_IN_REPO=1
+   sshagent
+   source "${FONCTION_ROOT}/git-prompt/gitprompt.sh" 
+fi
 
 java::home 17
