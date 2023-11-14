@@ -2,6 +2,28 @@
 
 Some useful functions (outils means tools/utils in french).
 
+## Installation
+
+### First installation
+
+```
+$ git clone --recursive
+```
+
+### Get submodules
+
+```
+$ git submodule update --init --recursive
+```
+
+### Update submodules
+
+**Only on maintenance purposes a pull request is needed.**
+
+```
+$ git submodule update --recursive --remote
+```
+
 ## Bash
 
 Some functions to add to your terminal.
