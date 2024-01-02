@@ -55,7 +55,7 @@ function fonction::warning () {
 function fonction::test_impl () {
   local -a missings
   while [ $# -ne 0 ]; do
-    if ! type -p "${1}" 2> /dev/null; then
+    if ! type -p "${1}" &> /dev/null; then
       missings+=("${1}")
     fi
     shift
