@@ -48,7 +48,11 @@ function java::tomcat () {
 function java::jdk_tomcat () {
   local -i version="${1}"
   if [ "${1}" -gt 8 ]; then
-    version=9
+    if [ "${1}" -ge 21 ]; then
+      version=10
+    else
+      version=9
+    fi
   fi
   java::tomcat "${version}"
 }
@@ -98,3 +102,4 @@ function java::gradle () {
     "${buildfile}" >&2
   return 3
 }
+
