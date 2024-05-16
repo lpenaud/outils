@@ -287,7 +287,7 @@ function confirm () {
 #   SSH agent variables.
 ########################################################################
 function sshagent () {
-  if ps -p "${SSH_AGENT_PID}" > /dev/null; then
+  if [ -n "${SSH_AGENT_PID}" ] && ps -p "${SSH_AGENT_PID}" > /dev/null; then
     return 0
   fi
   if [ -s "${SSH_AGENT}" ]; then
