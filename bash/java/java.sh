@@ -103,3 +103,26 @@ function java::gradle () {
   return 3
 }
 
+########################################################################
+# Call the gradle wrapper.
+# Find the wrapper up to the current user home directory.
+# Arguments:
+#   Any arguments to pass to the gradlew wrapper.
+# Globals:
+#   JAVA_HOME
+########################################################################
+function gw () {
+  while [ "$(pwd)" != "${HOME}" ] && [ -x "./gradlew" ]; do
+    pushd ..
+  done;
+  # Run Gradle task
+  ./gradlew "$@" &
+  # Restore the current working directory
+  # By emptying the stack
+  while popd; do
+    # Run until the directory stack is empty
+  done
+  fg
+}
+
+java::home 17
