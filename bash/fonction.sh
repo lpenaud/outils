@@ -308,6 +308,16 @@ function sshagent () {
     "SSH_AGENT_PID" "${SSH_AGENT_PID}"
 }
 
+
+########################################################################
+# Call popd until the directory stack is empty.
+########################################################################
+function cleard () {
+  while popd; do
+    :
+  done
+}
+
 # Vim are the best editor I known
 # Fly Emacs and Nano (especially Nano)
 export EDITOR=vim
