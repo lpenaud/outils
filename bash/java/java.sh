@@ -114,7 +114,7 @@ function java::gradle () {
 function gw () {
   while [ "$(pwd)" != "${HOME}" ] && [ -x "./gradlew" ]; do
     pushd ..
-  done;
+  done
   # Run Gradle task
   ./gradlew "$@" &
   # Restore the current working directory
