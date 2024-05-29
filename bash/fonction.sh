@@ -148,6 +148,13 @@ function v. () {
 }
 
 ########################################################################
+# Call the default explorer to open the current working directory.
+########################################################################
+function e. () {
+  open .
+}
+
+########################################################################
 # Generate base64 from a file.
 # Arguments:
 #  File to convert into 64.
