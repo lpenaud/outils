@@ -344,3 +344,5 @@ if [ -s "${FONCTION_ROOT}/git-prompt/gitprompt.sh" ]; then
    sshagent
    source "${FONCTION_ROOT}/git-prompt/gitprompt.sh" 
 fi
+
+source "${FONCTION_ROOT}/ssh.sh"
