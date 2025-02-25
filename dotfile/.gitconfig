@@ -1,14 +1,17 @@
+# Interesting article:
+# https://blog.gitbutler.com/how-git-core-devs-configure-git/
 [alias]
-	ci = commit
 	lg = log --graph "--pretty='tformat:%C(auto)%d%Creset %C(yellow)%h%Creset - %C(green)%an%Creset - %C(blue)%as%Creset%n%>>(8)%B'"
 	st = status
 	pullr = pull --rebase
-	pushf = push --force
+	# 
+	pushf = push --force-with-lease
 	ri = rebase --interactive
 	rc = rebase --continue
 	ra = rebase --abort
 	rs = rebase --skip
 	unstage = restore --staged
+	ci = commit
 	cia = commit --amend
 	cim = commit --message
 	chp = cherry-pick
@@ -18,3 +21,20 @@
 	stp = stash push
 [help]
 	format = web
+[commit]
+	verbose = true
+[column]
+	ui = auto
+[init]
+	# Its must be a default option and stop the message
+	defaultBranch = main
+[diff]
+	algorithm = histogram
+	colorMoved = plain
+	mnemonicPrefix = true
+	renames = true
+[pull]
+	rebase = true
+[rerere]
+	# https://blog.gitbutler.com/git-tips-1-theres-a-git-config-for-that/#reuse-recorded-resolution
+	enable = true
