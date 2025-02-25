@@ -333,6 +333,19 @@ function cleard () {
   done
 }
 
+########################################################################
+# Pad a number with leading zeros.
+# Arguments:
+#  Number to pad.
+#  Expected length by default 2.
+# Outputs:
+#  Input number with leading zeros.
+########################################################################
+function pad-number () {
+  # Hardcoded form: printf "%02d\n"
+  printf "%0*d\n" "${2-2}" "${1}"
+}
+
 # Vim are the best editor I known
 # Fly Emacs and Nano (especially Nano)
 export EDITOR=vim
