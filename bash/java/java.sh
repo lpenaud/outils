@@ -128,4 +128,4 @@ function gw () {
   fi
 }
 
-java::home 17
+java::home 21
