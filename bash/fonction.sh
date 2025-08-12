@@ -346,6 +346,10 @@ function pad-number () {
   printf "%0*d\n" "${2-2}" "${1}"
 }
 
+function activity () {
+  deno run "https://gist.githubusercontent.com/lpenaud/4bc8dce6c69d80a3a65bf4c59b4c4e5a/raw/activity.ts" "${1}" "${2}"
+}
+
 # Vim are the best editor I known
 # Fly Emacs and Nano (especially Nano)
 export EDITOR=vim
