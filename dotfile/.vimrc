@@ -4,5 +4,5 @@ set shiftwidth=4
 set expandtab
 set hidden
 syntax on
-# Backspace fix
+" Backspace fix
 set backspace=indent,eol,start
