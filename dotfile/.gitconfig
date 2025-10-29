@@ -12,13 +12,7 @@
 	rs = rebase --skip
 	unstage = restore --staged
 	ci = commit
-	cia = commit --amend
-	cim = commit --message
-	chp = cherry-pick
-	cha = cherry-pick --abort
-	chs = cherry-pick --skip
-	chc = cherry-pick --continue
-	stp = stash push
+	cia = commit --amend --no-edit
 [help]
 	format = web
 [commit]
@@ -38,3 +32,5 @@
 [rerere]
 	# https://blog.gitbutler.com/git-tips-1-theres-a-git-config-for-that/#reuse-recorded-resolution
 	enable = true
+[init]
+	defaultBranch = main
