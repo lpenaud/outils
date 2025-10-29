@@ -7,7 +7,7 @@ Some useful functions (outils means tools/utils in french).
 ### First installation
 
 ```
-$ git clone --recursive
+$ git clone --recurse-submodules https://github.com/lpenaud/outils.git
 ```
 
 ### Get submodules
