@@ -112,20 +112,11 @@ function java::gradle () {
 #   JAVA_HOME
 ########################################################################
 function gw () {
-  local pid
   until [ -x "./gradlew" ] || [ "$(pwd)" = "${HOME}" ]; do
     pushd .. &> /dev/null
   done
-  # Run Gradle task if gradlew found
-  if [ -x "./gradlew" ]; then
-    ./gradlew "$@" &
-    pid=$!
-  fi
-  # Restore the current working directory
+  [ -x "./gradlew" ] && ./gradlew "$@"
   cleard &> /dev/null
-  if [ -n "${pid}" ]; then
-    fg
-  fi
 }
 
 java::home 21
