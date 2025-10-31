@@ -13,6 +13,8 @@
 	unstage = restore --staged
 	ci = commit
 	cia = commit --amend --no-edit
+    ciae = commit --amend
+    submodule-update = submodule update --rebase --remote
 [help]
 	format = web
 [commit]
