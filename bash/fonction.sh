@@ -123,12 +123,8 @@ function java_gradle () {
 #  1 If it's impossible to get 'origin' repository url.
 ########################################################################
 function g. () {
-  local -r url="$("${FUNCTIONS_ROOT}/scripts/git.ts" "get-url" $@)"
-  if [ -z "${url}" ]; then
-    return 1
-  fi
-  echo "${url}"
-  open "${url}"
+  echo "Not implemeted yet" >&2
+  return 2
 }
 
 ########################################################################
