@@ -292,31 +292,45 @@ function confirm () {
 }
 
 ########################################################################
+# Test if a process is up.
+# Arguments:
+#  PID Process identifier
+# Returns:
+#  0 if the processs is up.
+########################################################################
+function ps::pid () {
+  ps -p "${1}" &> /dev/null
+}
+
+########################################################################
+# Test if ssh-agent is up.
+# Globals:
+#  SSH_AGENT_PID
+#  SSH_AUTH_SOCK
+# Returns:
+#  0 if ssh-agent is up.
+########################################################################
+function ssh-agent::exist () {
+  [ -n "${SSH_AGENT_PID}" ] \
+    && [ -S "${SSH_AUTH_SOCK}" ] \
+    && ps::pid "${SSH_AGENT_PID}"
+}
+
+########################################################################
 # Use existing SSH Agent or create one.
 # Create a file in the user home with the ssh-agent output.
 # Outputs:
 #   SSH agent variables.
 ########################################################################
 function sshagent () {
-  if [ -n "${SSH_AGENT_PID}" ] && ps -p "${SSH_AGENT_PID}" > /dev/null; then
-    return 0
-  fi
+  ssh-agent::exist && return 0
   if [ -s "${SSH_AGENT}" ]; then
-    cat "${SSH_AGENT}"
-    if ! confirm "Launch this script?"; then
-      ssh-agent > "${SSH_AGENT}"
-    fi
-  else 
-    ssh-agent > "${SSH_AGENT}"
+    export SSH_AUTH_SOCK="$(grep -Po "SSH_AUTH_SOCK=\K[\w\/\-\.]+" "${SSH_AGENT}")"
+    export SSH_AGENT_PID="$(grep -Po "SSH_AGENT_PID=\K\d+" "${SSH_AGENT}")"
   fi
-  source "${SSH_AGENT}" &> /dev/null
-  if ! ps -p "${SSH_AGENT_PID}" > /dev/null; then
-    ssh-agent > "${SSH_AGENT}"
-    source "${SSH_AGENT}"
-  fi
-  printf "%s=%s\n" "SSH_AGENT" "${SSH_AGENT}" \
-    "SSH_AUTH_SOCK" "${SSH_AUTH_SOCK}" \
-    "SSH_AGENT_PID" "${SSH_AGENT_PID}"
+  ssh-agent::exist && return 0
+  ssh-agent > "${SSH_AGENT}"
+  source "${SSH_AGENT}"
 }
 
 
