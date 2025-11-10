@@ -4,7 +4,7 @@
 	lg = log --graph "--pretty='tformat:%C(auto)%d%Creset %C(yellow)%h%Creset - %C(green)%an%Creset - %C(blue)%as%Creset%n%>>(8)%B'"
 	st = status
 	pullr = pull --rebase
-	# 
+	# https://blog.gitbutler.com/git-tips-2-new-stuff-in-git#safe-force-pushing
 	pushf = push --force-with-lease
 	ri = rebase --interactive
 	rc = rebase --continue
@@ -33,6 +33,7 @@
 	rebase = true
 [rerere]
 	# https://blog.gitbutler.com/git-tips-1-theres-a-git-config-for-that/#reuse-recorded-resolution
-	enable = true
+	enabled = true
+	autoUpdate = true
 [init]
 	defaultBranch = main
