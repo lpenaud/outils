@@ -317,17 +317,43 @@ function ssh-agent::exist () {
 }
 
 ########################################################################
+# Read the ssh-agent variables.
+# Globals:
+#  SSH_AGENT_PID
+#  SSH_AUTH_SOCK
+#  SSH_AGENT
+########################################################################
+function ssh-agent::read () {
+  local line name value
+  while read -r line; do
+    if [[ ! "${line}" =~ ^([[:upper:]_]+)=(.+)\;[[:blank:]]*export ]]; then
+      continue
+    fi
+    name="${BASH_REMATCH[1]}"
+    value="${BASH_REMATCH[2]}"
+    if [ "${name}" = "SSH_AUTH_SOCK" ]; then
+      export SSH_AUTH_SOCK="${value}"
+    elif [ "${name}" = "SSH_AGENT_PID" ]; then
+      export SSH_AGENT_PID="${value}"
+    fi
+  done < "${SSH_AGENT}"
+}
+
+########################################################################
 # Use existing SSH Agent or create one.
 # Create a file in the user home with the ssh-agent output.
+# Arguments:
+#   FORCE (-f --force) Force the creation a new ssh agent.
 # Outputs:
 #   SSH agent variables.
 ########################################################################
 function sshagent () {
-  ssh-agent::exist && return 0
-  if [ -s "${SSH_AGENT}" ]; then
-    export SSH_AUTH_SOCK="$(grep -Po "SSH_AUTH_SOCK=\K[\w\/\-\.]+" "${SSH_AGENT}")"
-    export SSH_AGENT_PID="$(grep -Po "SSH_AGENT_PID=\K\d+" "${SSH_AGENT}")"
+  if [ "${1}" = "-f" ] || [ "${1}" = "--force" ]; then
+    ssh-agent > "${SSH_AGENT}"
+    source "${SSH_AGENT}"
   fi
+  ssh-agent::exist && return 0
+  [ -s "${SSH_AGENT}" ] && ssh-agent::read
   ssh-agent::exist && return 0
   ssh-agent > "${SSH_AGENT}"
   source "${SSH_AGENT}"
