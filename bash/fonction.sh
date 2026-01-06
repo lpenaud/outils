@@ -382,6 +382,37 @@ function pad-number () {
   printf "%0*d\n" "${2-2}" "${1}"
 }
 
+########################################################################
+# Generate with openssl rand a string.
+# Arguments:
+#  String length.
+#  Format can be hex or base64.
+# Outputs:
+#  A string with the specific length.
+########################################################################
+function random-string () {
+  local result
+  local format="base64"
+  local -i length=0
+  local -l help="n"
+  until [ $# -eq 0 ]; do
+    if [[ "${1}" =~ ^[[:digit:]]+$ ]]; then
+      length="${1}"
+    elif [[ "${1}" =~ ((hex)|(base64))$ ]]; then
+      format="${BASH_REMATCH[1]}"
+    else
+      help="y"
+    fi
+    shift
+  done
+  if [ "${help}" = "y" ] || [ "${length}" -le 0 ]; then
+    printf "%s LENGTH [FORMAT=base64]\n" "${FUNCNAME}" >&2
+    return 1
+  fi
+  result="$(openssl rand "-${format}" "${length}")"
+  echo "${result:0:$length}"
+}
+
 function activity () {
   deno run "https://gist.githubusercontent.com/lpenaud/4bc8dce6c69d80a3a65bf4c59b4c4e5a/raw/activity.ts" "${1}" "${2}"
 }
