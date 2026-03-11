@@ -32,6 +32,17 @@ function fonction::os_script () {
 }
 
 ########################################################################
+# Test if a command is a file in PATH.
+# Arguments:
+#   Command name
+# Returns:
+#   0 if the command in a file in PATH.
+########################################################################
+function type::is-file () {
+  [ "$(type -t "${1}")" = "file" ]
+}
+
+########################################################################
 # Print a warning message to STDERR.
 # Arguments:
 #   Warning message
@@ -428,5 +439,15 @@ if [ -s "${FONCTION_ROOT}/git-prompt/gitprompt.sh" ]; then
    sshagent
    source "${FONCTION_ROOT}/git-prompt/gitprompt.sh" 
 fi
+
+# Deno
+if [ -d "${HOME}/.deno/bin" ]; then
+  export DENO_INSTALL_ROOT="${HOME}/.deno/bin"
+  add2path "${DENO_INSTALL_ROOT}"
+  type::is-file deno && source <(deno completions bash)
+fi
+
+# Pandoc
+type::is-file pandoc && source <(pandoc --bash-completion)
 
 source "${FONCTION_ROOT}/ssh.sh"
