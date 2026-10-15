@@ -444,7 +444,8 @@ fi
 if [ -d "${HOME}/.deno/bin" ]; then
   export DENO_INSTALL_ROOT="${HOME}/.deno/bin"
   add2path "${DENO_INSTALL_ROOT}"
-  type::is-file deno && source <(deno completions bash)
+  type::is-file ~/.local/share/bash-completion    /completions/deno.bash && \
+    source ~/.local/share/bash-completion    /completions/deno.bash
 fi
 
 # Pandoc
